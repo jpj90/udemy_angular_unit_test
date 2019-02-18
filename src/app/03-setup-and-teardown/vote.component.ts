@@ -1,4 +1,5 @@
 
+// this is a simple state change pattern
 export class VoteComponent { 
   totalVotes = 0; 
 
