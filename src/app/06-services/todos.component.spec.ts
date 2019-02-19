@@ -1,6 +1,9 @@
 import { TodosComponent } from './todos.component'; 
 import { TodoService } from './todo.service'; 
-import { from, empty, throwError } from 'rxjs';
+import { from, empty, throwError, Observable } from 'rxjs';
+
+// IMPORTANT: to disable tests, put an 'x' in front of the it()
+// or the describe() to disable the entire suite
 
 describe('TodosComponent', () => {
   let component: TodosComponent;
@@ -62,5 +65,30 @@ describe('TodosComponent', () => {
 
     // assert
     expect(component.message).toBe(error);
+  });
+
+  it('should call the server to delete a todo item if the user confirms', () => { 
+    // arrange
+    spyOn(window,'confirm').and.returnValue(true);
+    let spy = spyOn(service,'delete').and.returnValue(empty()); // this is an empty observable
+
+    // act
+    component.delete(1);
+
+    // assert
+    // expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(1); // this is a bit more specific and checks if the Act parameter was used in the service call
+  });
+  
+  it('should NOT call the server to delete a todo item if the user cancels', () => { 
+    // arrange
+    spyOn(window,'confirm').and.returnValue(false);
+    let spy = spyOn(service,'delete').and.returnValue(empty()); // this is an empty observable
+
+    // act
+    component.delete(1);
+
+    // assert
+    expect(spy).not.toHaveBeenCalled();
   });
 });
